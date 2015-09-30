@@ -18,8 +18,8 @@ void MainWindow::on_Load_clicked()
     QString fileName = QFileDialog::getOpenFileName();
     cv::Mat src = cv::imread(fileName.toStdString());
 
-    int width = src.cols;
-    int height = src.rows;
+    double width = src.cols;
+    double height = src.rows;
     cv::resize(src,src,cv::Size(width/1.5,height/1.5));
     this->img = src.clone();
     cv::imshow("picture",this->img);
@@ -50,6 +50,7 @@ void MainWindow::on_Brightness_valueChanged(int value)
     }
 
     cv::imshow("picture",dst);
+    this->img_save = dst.clone();
 }
 
 void MainWindow::on_B_bar_valueChanged(int value)
@@ -83,6 +84,7 @@ void MainWindow::on_B_bar_valueChanged(int value)
         }
     }
     cv::imshow("picture",dst);
+    this->img_save = dst.clone();
 }
 
 void MainWindow::on_G_bar_valueChanged(int value)
@@ -116,6 +118,7 @@ void MainWindow::on_G_bar_valueChanged(int value)
         }
     }
     cv::imshow("picture",dst);
+    this->img_save = dst.clone();
 }
 
 void MainWindow::on_R_bar_valueChanged(int value)
@@ -149,6 +152,7 @@ void MainWindow::on_R_bar_valueChanged(int value)
         }
     }
     cv::imshow("picture",dst);
+    this->img_save = dst.clone();
 }
 
 void MainWindow::on_Grayscale_clicked()
@@ -164,6 +168,7 @@ void MainWindow::on_Grayscale_clicked()
         }
     }
     cv::imshow("picture",dst);
+    this->img_save = dst.clone();
 }
 
 void MainWindow::on_Blur_clicked()
@@ -190,5 +195,61 @@ void MainWindow::on_Blur_clicked()
         }
     }
     cv::imshow("picture", dst);
+    this->img_save = dst.clone();
 }
 
+
+void MainWindow::on_Save_clicked()
+{
+    imwrite("picture", this->img_save);
+    this->img = this->img_save.clone();
+}
+
+void MainWindow::on_Negative_clicked()
+{
+    cv::Mat dst;
+
+    dst = this->img.clone();
+
+    for(int i = 0 ; i < this->img.rows ; i++)
+    {
+        for(int j = 0 ; j < this->img.cols ; j++)
+        {
+            for(int k = 0 ; k < this->img.channels() ; k++)
+            {
+                dst.at<cv::Vec3b>(i,j)[k] = 255 - this->img.at<cv::Vec3b>(i,j)[k];
+            }
+        }
+    }
+    cv::imshow("picture",dst);
+    this->img_save = dst.clone();
+}
+
+void MainWindow::on_Contrast_valueChanged(int value)
+{
+    float contrast_val = value / 10.0;
+    cv::Mat dst;
+    dst = this->img.clone();
+    for(int i = 0 ; i < this->img.rows ; i++)
+    {
+        for(int j = 0 ; j < this->img.cols ; j++)
+        {
+            for(int k = 0 ; k < this->img.channels() ; k++)
+            {
+                if(this->img.at<cv::Vec3b>(i,j)[k] * contrast_val > 255)
+                {
+                    dst.at<cv::Vec3b>(i,j)[k] = 255;
+                }
+                else if(this->img.at<cv::Vec3b>(i,j)[k] * contrast_val < 0)
+                {
+                    dst.at<cv::Vec3b>(i,j)[k] = 0;
+                }
+                else
+                    dst.at<cv::Vec3b>(i,j)[k] = this->img.at<cv::Vec3b>(i,j)[k] * contrast_val ;
+            }
+        }
+    }
+
+    cv::imshow("picture",dst);
+    this->img_save = dst.clone();
+}

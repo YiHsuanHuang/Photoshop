@@ -35,9 +35,16 @@ private slots:
 
     void on_Blur_clicked();
 
+    void on_Save_clicked();
+
+    void on_Negative_clicked();
+
+    void on_Contrast_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
     cv::Mat img;
+    cv::Mat img_save;
 };
 
 #endif // MAINWINDOW_H
