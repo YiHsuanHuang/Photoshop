@@ -174,6 +174,7 @@ void MainWindow::on_Grayscale_clicked()
 void MainWindow::on_Blur_clicked()
 {
     cv::Mat dst;
+    dst = this->img.clone();
 
     for(int i = 1 ; i < this->img.rows - 1 ; i++)
     {
@@ -201,7 +202,7 @@ void MainWindow::on_Blur_clicked()
 
 void MainWindow::on_Save_clicked()
 {
-    imwrite("picture", this->img_save);
+    imwrite("picture.bmp", this->img_save);
     this->img = this->img_save.clone();
 }
 
